@@ -35,7 +35,7 @@ jobs:
         echo "DIST_FILE=$(ls *.tar.gz | head -n 1)" >> $GITHUB_ENV
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: rinetd-dist
         path: ${{ env.DIST_FILE }}
