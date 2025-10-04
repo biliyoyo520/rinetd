@@ -1,0 +1,49 @@
+name: rinetd build
+
+on:
+  push:
+    tags:
+      - 'v*'  # 只有推送 tag（如 v1.0.0）时才触发发布
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: ./bootstrap
+      run: ./bootstrap
+
+    - name: configure
+      run: ./configure
+
+    - name: make
+      run: make
+
+    - name: make check
+      run: make check
+
+    - name: make distcheck
+      run: make distcheck
+
+    - name: Find dist tarball
+      run: |
+        ls -l *.tar.gz
+        echo "DIST_FILE=$(ls *.tar.gz | head -n 1)" >> $GITHUB_ENV
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: rinetd-dist
+        path: ${{ env.DIST_FILE }}
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        name: Release ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
+        files: ${{ env.DIST_FILE }}
