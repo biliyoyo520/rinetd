@@ -23,3 +23,12 @@ jobs:
       run: make check
     - name: make distcheck
       run: make distcheck
+    - name: Find dist tarball
+      run: |
+        echo "DIST_FILE=$(ls *.tar.gz | head -n 1)" >> $GITHUB_ENV
+
+    - name: Upload compiled artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: rinetd-dist
+        path: ${{ env.DIST_FILE }}
