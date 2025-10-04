@@ -23,12 +23,13 @@ jobs:
       run: make check
     - name: make distcheck
       run: make distcheck
-    - name: Find dist tarball
+    - name: Package compiled binary
       run: |
-        echo "DIST_FILE=$(ls *.tar.gz | head -n 1)" >> $GITHUB_ENV
-
-    - name: Upload compiled artifact
+        mkdir -p release
+        cp rinetd release/
+        tar -czvf rinetd-bin.tar.gz release/
+    - name: Upload compiled binary
       uses: actions/upload-artifact@v4
       with:
-        name: rinetd-dist
-        path: ${{ env.DIST_FILE }}
+          name: rinetd-binary
+          path: rinetd-bin.tar.gz
