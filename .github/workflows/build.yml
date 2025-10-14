@@ -15,8 +15,8 @@ jobs:
     - uses: actions/checkout@v4
     - name: ./bootstrap
       run: ./bootstrap
-    - name: configure
-      run: ./configure
+    - name: configure (static)
+      run: CC=musl-gcc ./configure LDFLAGS="-static" CFLAGS="-O2"
     - name: make
       run: make
     - name: make check
